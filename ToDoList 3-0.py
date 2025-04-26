@@ -132,34 +132,34 @@ def mark_task_as_incomplete():
 def main():
     while True:
         display_opt()
-        opt = int(input("Option: "))
+        opt = input("Option: ")
 
         if opt.isdigit():
-            if opt == 1:
+            if int(opt) == 1:
                 add_list()
                 input("Press ENTER to continue")
 
-            if opt == 2:
+            if int(opt) == 2:
                 del_list()
                 input("Press ENTER to continue")
 
-            if opt == 3:
+            if int(opt) == 3:
                 add_to_list()
                 input("Press ENTER to continue")
 
-            if opt == 4:
+            if int(opt) == 4:
                 del_from_list()
                 input("Press ENTER to continue")
 
-            if opt == 5:
+            if int(opt) == 5:
                 mark_task_as_complete()
                 input("Press ENTER to continue")
 
-            if opt == 6:
+            if int(opt) == 6:
                 mark_task_as_incomplete()
                 input("Press ENTER to continue")
 
-            if opt == 0:
+            if int(opt) == 0:
                 display_lists()
                 input("Press ENTER to continue")
         else:
