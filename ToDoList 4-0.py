@@ -11,15 +11,21 @@ options = [
 ]
 todo = {}
 lists = []
-addtaskvisible = 0
 
 # Tkinter Variables
 root = tk.Tk()
 root.title(f"ToDoList {version}")
 winW = 450
 winH = 400
+btn_padding = 10
 
-# Center Screen Funtion
+### Visible function variables
+addtaskvisible = 0
+addlistvisible = 0
+button_frame = tk.Frame(root)
+
+
+# Center Screen Function
 def center_screen():
     screenW = root.winfo_screenwidth()
     screenH = root.winfo_screenheight()
@@ -46,7 +52,6 @@ def AddList():
     lists.append(listname)
     addlist_confirmation_var.set(f"New list created with the title {listname}")
     update_lists_dropdown()
-    print(lists, "\n", todo)
 
 def update_lists_dropdown():
     listsDropdown['values'] = lists
@@ -60,18 +65,32 @@ def display_List():
             listDisplay.insert(tk.END, f"{key}: {value}\n")  
 
 def AddTask():
+    is_completed = "X"
+    item_name = addtask_entry.get()
+    listLookup = listsDropdown.get()
+
+    todo[listLookup].update({item_name: is_completed})
+    f"Updated list: {todo[listLookup]}"
+    display_List()
+
+def CompleteTask():
     pass
+
 def ShowAddTask():
     global addtaskvisible
-    if addtaskvisible == 0 and optionDropdown.get() == "View and Modify Lists":
-        addtask_entry.pack(pady=10, padx=10)
-        comfirm_new_task.pack(pady=5)
-        addtaskvisible = 1
-    else:
+    if optionDropdown.get() == "View and Modify Lists":
+        if addtaskvisible == 0:
+            addtask_entry.pack(pady=10, padx=10)
+            comfirm_new_task.pack(pady=5)
+            addtaskvisible = 1
+        else:
+            addtask_entry.pack_forget()
+            comfirm_new_task.pack_forget()
+            addtaskvisible = 0
+    elif optionDropdown.get() != "View and Modify Lists":
         addtask_entry.pack_forget()
         comfirm_new_task.pack_forget()
         addtaskvisible = 0
-    
 
 ### DISPLAY WIDGETS ###
 
@@ -84,24 +103,35 @@ optionDropdown.bind("<<ComboboxSelected>>", on_select)
 ### Temporary Widgets
 DLtempLabel = ttk.Label(root, text="This feature is being developed: Delete Lists")
 
-### AddList() Widgets
-new_list = tk.StringVar()
-addlist_confirmation_var = tk.StringVar()
-addlist_entry = tk.Entry(root, textvariable=new_list)
-addlist_label = tk.Label(root, text="New List")
-addlist_button = tk.Button(root, text="Add List", command=AddList)
-addlist_comfirmation = tk.Label(root, textvariable=addlist_confirmation_var)
-
 ### View_ModifyListsWidget() Widgets
 currentList = tk.StringVar()
 listsDropdown = ttk.Combobox(root, values=lists, justify=tk.CENTER)
 listDisplay = tk.Text(root, height=10)
 ### AddTask() Widgets
-show = 0
 new_task = tk.StringVar()
 addtask_btn = ttk.Button(root, text="Add Task", command=ShowAddTask)
 addtask_entry = ttk.Entry(root, textvariable=new_task)
 comfirm_new_task = ttk.Button(root, text="Confirm", command=AddTask)
+### DeleteTask() Widgets
+delete_task = tk.StringVar()
+delete_task_btn = ttk.Button(root, text="Delete Task")
+delete_task_entry = ttk.Entry(root, textvariable=delete_task)
+delete_task_label = tk.Label(root, text="Delete Task")
+### AddList() Widgets
+new_list = tk.StringVar()
+addlist_btn = ttk.Button(root, text="Add List")
+addlist_confirmation_var = tk.StringVar()
+addlist_entry = tk.Entry(root, textvariable=new_list)
+addlist_label = tk.Label(root, text="New List")
+addlist_button = tk.Button(root, text="Add List", command=AddList)
+addlist_comfirmation = tk.Label(root, textvariable=addlist_confirmation_var)
+### DeleteList() Widgets
+delete_list = tk.StringVar()
+delete_list_btn = ttk.Button(root, text="Delete List")
+delete_list_entry = ttk.Entry(root, textvariable=delete_list)
+delete_list_label = tk.Label(root, text="Delete List")
+delete_list_button = tk.Button(root, text="Delete List")
+
 
 # Add List Function
 def AddListWidget():
@@ -128,7 +158,12 @@ def View_ModifyListsWidget():
     if optionDropdown.get() == "View and Modify Lists":
         listsDropdown.pack(anchor=tk.N, pady=10)
         listDisplay.pack(anchor=tk.W, padx=20, pady=10)
-        addtask_btn.pack(anchor=tk.SW, pady=15, padx=15)
+        addtask_btn.pack(in_=button_frame, side=tk.LEFT, padx=btn_padding)
+        delete_task_btn.pack(in_=button_frame, side=tk.LEFT, padx=btn_padding)
+        addlist_btn.pack(in_=button_frame, side=tk.LEFT, padx=btn_padding)
+        delete_list_btn.pack(in_=button_frame, side=tk.LEFT, padx=btn_padding)
+        button_frame.pack(anchor=tk.SW, pady=15, padx=15)
+        ShowAddTask()
     else:
         listsDropdown.pack_forget()
         listDisplay.pack_forget()
@@ -140,6 +175,7 @@ def main():
     AddListWidget()
     DeleteListWidget()
     View_ModifyListsWidget()
+    ShowAddTask()
     root.mainloop()
 
 if __name__ == '__main__':
